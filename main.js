@@ -31,9 +31,18 @@ if (scrollY >= top && scrollY < top + height) {
 const hamburger = document.getElementById('hamburger');
 const navLinksMenu = document.getElementById('navLinks');
 
-hamburger.addEventListener('click', () => {
+hamburger.addEventListener('click', (e) => {
+e.stopPropagation();
 hamburger.classList.toggle('open');
 navLinksMenu.classList.toggle('open');
+});
+
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+if (!navbar.contains(e.target)) {
+hamburger.classList.remove('open');
+navLinksMenu.classList.remove('open');
+}
 });
 
 // Close menu on link click
@@ -70,14 +79,12 @@ const timer = setInterval(() => {
 /* ---------- Intersection Observer for reveal animations ---------- */
 const observerOptions = { threshold: 0, rootMargin: '0px 0px -40px 0px' };
 
-// Helper: mark cards as will-animate via JS (graceful degradation if JS disabled)
 function initAnimatable(selector) {
 document.querySelectorAll(selector).forEach(el => el.classList.add('will-animate'));
 }
 initAnimatable('.service-card');
 initAnimatable('.portfolio-card');
 
-// Fallback: if anything is still invisible after 2 s, force-show it
 function forceShowAll() {
 document.querySelectorAll('.will-animate:not(.visible)').forEach(el => {
 el.classList.add('visible');
@@ -123,7 +130,7 @@ if (entry.isIntersecting && !skillsAnimated) {
     skillsAnimated = true;
     skillCircles.forEach(circle => {
     const pct = +circle.getAttribute('data-pct');
-    const circumference = 2 * Math.PI * 50; // r=50
+    const circumference = 2 * Math.PI * 50;
     const offset = circumference - (pct / 100) * circumference;
     circle.style.strokeDasharray = circumference;
     circle.style.strokeDashoffset = offset;
@@ -167,7 +174,6 @@ if (!isValidEmail(email)) {
     return;
 }
 
-// Simulate send
 sendBtn.disabled = true;
 sendBtn.innerHTML = 'Sending… <i class="fa-solid fa-spinner fa-spin"></i>';
 
